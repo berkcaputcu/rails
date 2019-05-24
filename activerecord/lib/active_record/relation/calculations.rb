@@ -295,7 +295,10 @@ module ActiveRecord
           query_builder = relation.arel
         end
 
-        result = skip_query_cache_if_necessary { @klass.connection.select_all(query_builder, nil) }
+        result = skip_query_cache_if_necessary do
+          @klass.connection.select_all(query_builder, "#{@klass} #{operation.capitalize}")
+        end
+
         row    = result.first
         value  = row && row.values.first
         type   = result.column_types.fetch(column_alias) do
