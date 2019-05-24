@@ -47,6 +47,78 @@ module ActiveRecord
       ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
     end
 
+    def test_payload_name_on_calculate
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "COUNT"
+          assert_equal "Book Count", event.payload[:name]
+        end
+      end
+      Book.calculate(:count, :all)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    def test_payload_name_on_average
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "AVG"
+          assert_equal "Book Average", event.payload[:name]
+        end
+      end
+      Book.average(:id)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    def test_payload_name_on_count
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "COUNT"
+          assert_equal "Book Count", event.payload[:name]
+        end
+      end
+      Book.count
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    def test_payload_name_on_maximum
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "MAX"
+          assert_equal "Book Maximum", event.payload[:name]
+        end
+      end
+      Book.maximum(:id)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    def test_payload_name_on_minimum
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "MIN"
+          assert_equal "Book Minimum", event.payload[:name]
+        end
+      end
+      Book.minimum(:id)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    def test_payload_name_on_sum
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        if event.payload[:sql].match "SUM"
+          assert_equal "Book Sum", event.payload[:name]
+        end
+      end
+      Book.sum(:id)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
     def test_payload_name_on_update_all
       subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
         event = ActiveSupport::Notifications::Event.new(*args)
